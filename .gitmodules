@@ -1,0 +1,6 @@
+[submodule "Hunyuan3D-2"]
+	path = Hunyuan3D-2
+	url = https://github.com/Tencent/Hunyuan3D-2
+[submodule "TRELLIS"]
+	path = TRELLIS
+	url = https://github.com/FishWoWater/TRELLIS
