@@ -162,8 +162,16 @@ class HunyuanTrellisImageTo3D:
         mesh.remove_degenerate_faces()
         savepath = ""
         if savedir:
+            # save before we rotate as gradio expects a y-up mesh 
             savepath = osp.join(savedir, "geo.glb")
             mesh.export(savepath)
+
+        # rotate to z-up for compatibility with trellis
+        mesh.vertices = (
+            mesh.vertices
+            @ np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
+            # @ np.array([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]])
+        )
         return mesh, savepath
 
     def image_to_3d_tex(
@@ -178,11 +186,6 @@ class HunyuanTrellisImageTo3D:
         savedir: str = "",
         seed=2025,
     ):
-        mesh.vertices = (
-            mesh.vertices
-            @ np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
-            # @ np.array([[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]])
-        )
         binary_voxel = voxelize(mesh)
 
         if not self.use_trellis_mesh:

@@ -1,19 +1,22 @@
-## Hunyuan3D-v2 + TreLLIS for Fast and Memory-Efficient Textured 3D Mesh Generation
+## Hunyuan3D-v2 + TRELLIS for Fast and Memory-Efficient Textured 3D Mesh Generation
 
-Main features:
+### Main features:
 * **About 8 seconds and 8GB VRAM** to generate a textured mesh
 * Support using **different** images for geometry and texture generation 
-* Asynchronous texture generation and mesh decimation(deci from hunyuan3d geometry, thus faster)
 
+### Techniques Behind:
+* Image -> Hunyuan3D-2 mini geometry generation -> Trellis texture generation + mesh decimation -> baking texture -> glb export 
+* Asynchronous texture generation and mesh decimation(when the trellis runs DiT to generate the texture, perform decimation on the hunyuan 3d geometry mesh)
+
+### Demo
 ![video_demo](assets/video_demo.gif)
 
----
 ### Setup 
 ``` shell 
 # clone the repo 
-git clone --recurisve https://github.com/FishWoWater/hunyuan3d_trellis_fast
+git clone --recurse-modules https://github.com/FishWoWater/hunyuan_trellis_fast
 
-cd hunyuan3d_trellis_fast 
+cd hunyuan_trellis_fast 
 conda create -n hunyuan_trellis python=3.10
 conda activate hunyuan_trellis
 # install trellis depdendencies (write into existing env)
@@ -30,7 +33,7 @@ cd ../../..
 cd hy3dgen/texgen/differentiable_renderer
 python3 setup.py install
 ```
----
+
 ### Usage
 ``` shell
 # run cli demo  
@@ -39,7 +42,7 @@ python demo.py
 # run gradio app 
 python app.py
 ```
----
+
 
 ### Parameters 
 | Parameters  | Description | Default | 
@@ -52,9 +55,8 @@ python app.py
 | bake_mode |  'fast' or 'opt' mode in trellis texture baking, 'opt' mode will **consumes much more memory(~2G+)** | 'fast' |
 | get_srgb_texture | get texture in the sRGB space | False |
 
----
+
 ### Comparison Against TRELLIS/Hunyuan3D-2/Spar3D
-In short, 
 1. [Trellis](https://github.com/microsoft/TRELLIS) is **a bit slower** (or require **more memory** (14GB+) to be faster). 
 2. [Hunyuan3D-2](https://github.com/Tencent/Hunyuan3D-2) recently released the turbo/mini-turbo version, but the texture generation is still **slow** and **a bit over-saturated** 
 3. [Spar3D](https://github.com/Stability-AI/stable-point-aware-3d) is very fast (~1 second) but the quality **is NOT good**, require 10G memory by default (or can sacrifice a bit speed to save memory)
