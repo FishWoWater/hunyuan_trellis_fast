@@ -1,10 +1,11 @@
-## Hunyuan3D-v2 + TRELLIS for Fast and Memory-Efficient Textured 3D Mesh Generation
+## Hunyuan + TRELLIS -> Fast and Memory-Efficient Textured Mesh Generation
 
 ### Main features:
 * **About 8 seconds and 8GB VRAM** to generate a textured mesh
 * Support using **different** images for geometry and texture generation 
 
 ### Techniques Behind:
+> no any magic here, simply reusing hunyuan3d-turbo, + trellis as the texture generator
 * Image -> Hunyuan3D-2 mini geometry generation -> Trellis texture generation + mesh decimation -> baking texture -> glb export 
 * Asynchronous texture generation and mesh decimation(when the trellis runs DiT to generate the texture, perform decimation on the hunyuan 3d geometry mesh)
 
