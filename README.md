@@ -1,11 +1,13 @@
 ## Hunyuan + TRELLIS -> Fast and Memory-Efficient Textured Mesh Generation
 
+**Update-20250407**: support text-to-3d cli demos and gradio app demos 
+
 ### Main features:
-* **About 8 seconds and 8GB VRAM** to generate a textured mesh
+* **About 8 seconds and 8GB VRAM** to generate a textured mesh from image (ImageTo3D)
+* **About 13 seconds and 11GB VRAM** to generate a textured mesh from text (TextTo3D) [For Better quality you should use more VRAM for better T2I and better rembg]
 * Support using **different** images for geometry and texture generation 
 
 ### Techniques Behind:
-> no any magic here, simply reusing hunyuan3d-turbo, + trellis as the texture generator
 * Image -> Hunyuan3D-2 mini geometry generation -> Trellis texture generation + mesh decimation -> baking texture -> glb export 
 * Asynchronous texture generation and mesh decimation(when the trellis runs DiT to generate the texture, perform decimation on the hunyuan 3d geometry mesh)
 
@@ -37,11 +39,20 @@ python3 setup.py install
 
 ### Usage
 ``` shell
-# run cli demo  
+# run cli demo for image-to-3d
 python demo.py 
+# cli demo for text-to-3d 
+# require a from-source installation of diffusers 
+# if you have 24GB+ VRAM(e.g. 4090/H20/A100), set low_vram to False
+# it will use a better text-to-image and background remover model
+pip install git+https://github.com/huggingface/diffusers
+python demo_text.py 
 
-# run gradio app 
+# run gradio app for image-to-3d 
 python app.py
+# gradio app for text-to-3d 
+# if you have 
+python app_text.py
 ```
 
 

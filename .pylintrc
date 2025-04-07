@@ -14,7 +14,9 @@ disable=
     C0114, # missing-module-docstring
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
+    C0410, # multiple imports on a single line 
     C0411, # import order 
+    C0413, # import on top 
     R0903, # too-few-public-methods
     R0913, # too-many-arguments
     R0914, # too-many-locals
@@ -23,6 +25,7 @@ disable=
     W0621, # redefined-outer-name
     W0703, # broad-except
     W1203, # logging-fstring-interpolation
+    W1514, # not specifiying the encoding when opening files 
     E1101, # no-member (often false-positives with dynamic features)
 
 [FORMAT]

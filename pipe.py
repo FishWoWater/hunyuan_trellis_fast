@@ -1,23 +1,16 @@
 import os, os.path as osp
 import time
-import glob
-import json
 import sys
 
-sys.path.append(osp.join(os.getcwd(), "TRELLIS"))
+sys.path.insert(0, osp.join(os.getcwd(), "TRELLIS"))
 os.environ["ATTN_BACKEND"] = "flash-attn"
 
 import multiprocessing as mp
 import imageio
 import trimesh
 import numpy as np
-import open3d as o3d
-import pyvista as pv
-import xatlas
 import torch
-from tqdm import tqdm, trange
-from typing import Literal, Optional
-from PIL import Image
+from typing import Optional, Literal
 from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
 from hy3dgen.rembg import BackgroundRemover
 from trellis.pipelines import TrellisImageTo3DPipeline
@@ -162,7 +155,7 @@ class HunyuanTrellisImageTo3D:
         mesh.remove_degenerate_faces()
         savepath = ""
         if savedir:
-            # save before we rotate as gradio expects a y-up mesh 
+            # save before we rotate as gradio expects a y-up mesh
             savepath = osp.join(savedir, "geo.glb")
             mesh.export(savepath)
 
