@@ -76,7 +76,8 @@ class HunyuanTrellisTextTo3D:
             )
             self._t2i_pipe.to(self.device)
 
-        if self.low_vram:
+        # if self.low_vram:
+        if True:
             # need a background remover
             # notice that bria rembg 1.4 is vram-efficient
             # and better than rembg package
@@ -91,7 +92,7 @@ class HunyuanTrellisTextTo3D:
             self._rembg = AutoModelForImageSegmentation.from_pretrained(
                 "briaai/RMBG-2.0", trust_remote_code=True
             )
-            torch.set_float32_matmul_precision(["high", "highest"][0])
+            # torch.set_float32_matmul_precision(["high", "highest"][0])
             self._rembg.to("cuda")
             self._rembg.eval()
 
@@ -109,15 +110,19 @@ class HunyuanTrellisTextTo3D:
             use_hunyuan_mini=self.use_hunyuan_mini,
             use_trellis_mesh=self.use_trellis_mesh,
             save_gs_video=self.save_gs_video,
+            require_rembg=False, 
             device=self.device,
         )
 
+    @torch.no_grad()
     def text_to_image(self, prompt):
+        generator = torch.manual_seed(0)
         image = self._t2i_pipe(
-            prompt=prompt, num_inference_steps=1, guidance_scale=0.0
+            prompt=prompt, num_inference_steps=4, generator=generator, guidance_scale=8.0
         ).images[0]
         return image
 
+    @torch.no_grad()
     def text_to_3d_geo(self, prompt: str, savedir: str = "", seed=2025):
         image = self.text_to_image(prompt)
         if savedir:
@@ -131,18 +136,27 @@ class HunyuanTrellisTextTo3D:
         )
         return image, raw_mesh, rawpath
 
+    @torch.no_grad()
     def remove_bg(self, image):
-        if self._rembg_transform_image is not None:
-            image = self._rembg_transform_image(image)
-        image = self._rembg(image)
+        # if self.low_vram:
+        if True:
+            image = self._rembg(image)
+        else:
+            if self._rembg_transform_image is not None:
+                input_images = self._rembg_transform_image(image)[None].to(self.device)
+            preds = self._rembg(input_images)[-1].sigmoid().cpu()
+            pred_pil = transforms.ToPILImage()(preds[0].squeeze())
+            mask = pred_pil.resize(image.size)
+            image.putalpha(mask)
         return image
 
+    @torch.no_grad()
     def text_to_3d_tex(
         self,
         image,
         raw_mesh,
         savedir="",
-        num_trellis_steps: int = 13,
+        num_trellis_steps: int = 12,
         trellis_cfg: float = 3.75,
         trellis_bake_mode: Literal["fast", "opt"] = "fast",
         fill_mesh_holes: bool = True,
@@ -162,10 +176,11 @@ class HunyuanTrellisTextTo3D:
         )
         return mesh, path
 
+    @torch.no_grad()
     def text_to_3d(
         self,
         prompt: str,
-        num_trellis_steps: int = 13,
+        num_trellis_steps: int = 12,
         trellis_cfg: float = 3.75,
         trellis_bake_mode: Literal["fast", "opt"] = "fast",
         fill_mesh_holes: bool = True,

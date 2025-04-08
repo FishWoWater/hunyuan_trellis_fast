@@ -38,6 +38,7 @@ class HunyuanTrellisImageTo3D:
         use_hunyuan_mini: bool,
         use_trellis_mesh: bool,
         save_gs_video: bool = False,
+        require_rembg: bool = True, 
         device: str = "cuda",
     ):
         self.use_hunyuan_mini = use_hunyuan_mini
@@ -61,6 +62,7 @@ class HunyuanTrellisImageTo3D:
         self.tex_pipeline = None
         self.rembg = None
         self.result_queue = mp.Queue()
+        self.require_rembg = require_rembg
 
         self._initialize_models()
 
@@ -90,7 +92,7 @@ class HunyuanTrellisImageTo3D:
             self.tex_pipeline.to(self.device)
 
         # suggested to use birefnet-general for better bg removal
-        if self.rembg is None:
+        if self.rembg is None and self.require_rembg:
             self.rembg = BackgroundRemover()
 
     def run_geometry(self, image):
@@ -118,7 +120,7 @@ class HunyuanTrellisImageTo3D:
         return outputs
 
     def image_to_3d_geo(self, image: str, savedir: str = "", seed=2025):
-        if image.mode == "RGB":
+        if image.mode == "RGB" and self.require_rembg:
             tik = time.time()
             image = self.rembg(image)
             if savedir:

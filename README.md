@@ -17,7 +17,7 @@
 ### Setup 
 ``` shell 
 # clone the repo 
-git clone --recurse-modules https://github.com/FishWoWater/hunyuan_trellis_fast
+git clone --recurse-submodules https://github.com/FishWoWater/hunyuan_trellis_fast
 
 cd hunyuan_trellis_fast 
 conda create -n hunyuan_trellis python=3.10
@@ -35,6 +35,13 @@ python3 setup.py install
 cd ../../..
 cd hy3dgen/texgen/differentiable_renderer
 python3 setup.py install
+
+# install main hy3dgen
+cd ../../..
+python setup.py install
+
+# other requirements 
+pip install open3d gradio_litmodel3d diso pydantic=2.10.6
 ```
 
 ### Usage

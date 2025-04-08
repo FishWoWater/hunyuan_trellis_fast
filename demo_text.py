@@ -14,7 +14,7 @@ if __name__ == "__main__":
     trellis_fast_bake = True
     fill_mesh_holes = False
     num_trellis_steps = 12
-    save_gs_video = True
+    save_gs_video = False
     low_vram = False
 
     pipe = HunyuanTrellisTextTo3D(
